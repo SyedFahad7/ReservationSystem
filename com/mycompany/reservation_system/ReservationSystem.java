@@ -5,12 +5,13 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Scanner;
 
 public class ReservationSystem {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/reservation_system";
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "QwerTYfahad&1";
-    
+
     static {
         try {
             // Load the MySQL JDBC driver class
@@ -22,8 +23,28 @@ public class ReservationSystem {
     }
 
     // Method to insert reservation details into the database
-    public void insertReservation(String passengerName, String trainNumber, String classType, String dateOfJourney, String departureStation, String destinationStation) {
+    public void insertReservation() {
+        Scanner scanner = new Scanner(System.in);
+
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+            System.out.println("Enter passenger name: ");
+            String passengerName = scanner.nextLine();
+
+            System.out.println("Enter train number: ");
+            String trainNumber = scanner.nextLine();
+
+            System.out.println("Enter class type: ");
+            String classType = scanner.nextLine();
+
+            System.out.println("Enter date of journey: ");
+            String dateOfJourney = scanner.nextLine();
+
+            System.out.println("Enter departure station: ");
+            String departureStation = scanner.nextLine();
+
+            System.out.println("Enter destination station: ");
+            String destinationStation = scanner.nextLine();
+
             // Insert reservation details into the database
             String sql = "INSERT INTO reservations (passenger_name, train_number, class_type, date_of_journey, departure_station, destination_station) "
                     + "VALUES (?, ?, ?, ?, ?, ?)";
@@ -34,7 +55,7 @@ public class ReservationSystem {
                 preparedStatement.setString(4, dateOfJourney);
                 preparedStatement.setString(5, departureStation);
                 preparedStatement.setString(6, destinationStation);
-    
+
                 int rowsAffected = preparedStatement.executeUpdate();
                 if (rowsAffected > 0) {
                     System.out.println("Reservation successfully inserted.");
@@ -44,9 +65,12 @@ public class ReservationSystem {
             }
         } catch (SQLException e) {
             System.out.println("Error: " + e.getMessage());
+        } finally {
+            // Close the scanner
+            scanner.close();
         }
     }
-    
+
     // Method to fetch train information based on train number
     public void fetchTrainInfo(String trainNumber) {
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
